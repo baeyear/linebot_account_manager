@@ -12,7 +12,7 @@ function Example() {
 
                         <div className="card-body">I'm an example component!</div>
                         <Button color="secondary" variant="contained">ワイがMaterial-UIのボタンや!!</Button>
-                        <Button color="primary" variant="contained">Hello World</Button>
+                        <Button color="primary" variant="contained"　href={`/hometest`}>Exampleに遷移</Button>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,3 @@ function Example() {
 }
 
 export default Example;
-
-if (document.getElementById('example')) {
-    ReactDOM.render(<Example />, document.getElementById('example'));
-}
