@@ -35,7 +35,7 @@ class CreateOfficialAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::create('official_accounts', function (Blueprint $table) {
+        Schema::table('official_accounts', function (Blueprint $table) {
         $table->dropForeign('official_accounts_user_id_foreign');
         });
         Schema::dropIfExists('official_accounts');

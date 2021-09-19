@@ -34,7 +34,7 @@ class CreateChatsTable extends Migration
      */
     public function down()
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::table('chats', function (Blueprint $table) {
             $table->dropForeign('chats_line_id_foreign');
             });
         Schema::dropIfExists('chats');

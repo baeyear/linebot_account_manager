@@ -17,6 +17,4 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('{any}', function () {
-    return view('home');
-})->where('any','.*');
+Route::get('{any}','HomeController@index')->where('any','.*');

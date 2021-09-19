@@ -37,7 +37,7 @@ class CreateLineUsersTable extends Migration
      */
     public function down()
     {
-        Schema::create('line_users', function (Blueprint $table) {
+        Schema::table('line_users', function (Blueprint $table) {
             $table->dropForeign('line_users_account_id_foreign');
             });
         Schema::dropIfExists('line_users');
