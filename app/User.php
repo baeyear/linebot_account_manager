@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function official_accounts()
+    {
+        return $this->belongsToMany('App\OfficialAccount', 'user_official_account');
+    }
 }
