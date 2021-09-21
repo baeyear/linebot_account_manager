@@ -6,7 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => createStyles({
         minWidth: 650,
       },
     tableHead: {
-        backgroundColor: purple['A100'],
+        backgroundColor: green['100'],
     },
 }));
 
@@ -30,7 +30,6 @@ function MainTable(props) {
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-                {/* ヘッダー部分 */}
                 <TableHead className={classes.tableHead}>
                     <TableRow>
                         {headerList.map((item, index) => (
@@ -38,7 +37,6 @@ function MainTable(props) {
                         ))}
                     </TableRow>
                 </TableHead>
-                {/* ボディ部分 */}
                 <TableBody>
                     {rows.map((row, index) => (
                         <TableRow key={index}>

@@ -12,6 +12,7 @@
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "^4.4",
         "laravel/framework": "^6.20.26",
+        "laravel/passport": "9.x",
         "laravel/tinker": "^2.5",
         "linecorp/line-bot-sdk": "^7.1"
     },

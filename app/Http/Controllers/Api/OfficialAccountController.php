@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\OfficialAccount;
+use App\User;
+use App\UserOfficialAccount;
+use Illuminate\Support\Facades\Log;
 
 class OfficialAccountController extends Controller
 {
@@ -15,7 +18,9 @@ class OfficialAccountController extends Controller
      */
     public function index()
     {
-        $official_accounts = OfficialAccount::all();
+        // api認証を用いるため、id取得方法が異なる
+        $user = User::find(Auth::id());
+        $official_accounts = $user->official_accounts->all();
         return response()->json($official_accounts, 200);
     }
 
@@ -37,7 +42,24 @@ class OfficialAccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $official_account = new OfficialAccount();
+        $official_account->webhook_url = $request->webhook_url;
+        $official_account->access_token = $request->access_token;
+        $official_account->channel_secret = $request->channel_secret;
+        $official_account->channel_id = $request->channel_id;
+        $official_account->save();
+
+        $official_account_id = $official_account->id;
+        $user_id = Auth::id();
+        $permission_id = 1;
+
+        $user_official_account = new UserOfficialAccount();
+        $user_official_account->user_id = $user_id;
+        $user_official_account->official_account_id = $official_account_id;
+        $user_official_account->permission_id = $permission_id;
+        $user_official_account->save();
+
+        return response()->json($official_account, 200);
     }
 
     /**

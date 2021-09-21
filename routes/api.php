@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\OfficialAccountController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,4 +17,6 @@ use App\Http\Controllers\Api\UserController;
 
 Route::group(['middleware' => 'api'], function(){
     Route::get('users', 'Api\UserController@index');
+    Route::post('official_accounts/create', 'Api\OfficialAccountController@store');
+    Route::get('official_accounts', 'Api\OfficialAccountController@index');
 });
