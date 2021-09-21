@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\OfficialAccountController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,8 +14,16 @@
 |
 */
 
-Route::get('/',function(){
+Route::get('/', function () {
     return view('welcome');
 });
+
 Auth::routes();
-Route::get('{any}','HomeController@index');
+
+Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
+    Route::get('users', 'Api\UserController@index');
+    Route::post('official_accounts/create', 'Api\OfficialAccountController@store');
+    Route::get('official_accounts', 'Api\OfficialAccountController@index');
+});
+
+Route::get('{any}', 'HomeController@index');

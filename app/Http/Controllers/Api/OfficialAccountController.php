@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\OfficialAccount;
 use App\User;
 use App\UserOfficialAccount;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class OfficialAccountController extends Controller
