@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\UserOfficialAccount;
 
 class User extends Authenticatable
 {
@@ -39,6 +40,7 @@ class User extends Authenticatable
 
     public function official_accounts()
     {
-        return $this->belongsToMany('App\OfficialAccount', 'user_official_account');
+        return $this->belongsToMany('App\OfficialAccount', 'user_official_account')
+            ->using(UserOfficialAccount::class)->withPivot(['permission_id']);
     }
 }

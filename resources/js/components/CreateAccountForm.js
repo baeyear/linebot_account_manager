@@ -13,14 +13,15 @@ const useStyles = makeStyles((theme) => createStyles({
 function CreateAccountForm(props) {
 
     const classes = useStyles();
-    const {setOfficialAccounts, officialAccounts, setFormData, formData } = props;
+    const { setOfficialAccounts, officialAccounts, setFormData, formData } = props;
 
-    const createAccount = async(e) => {
-        if(formData == ''){
+    const createAccount = async (e) => {
+        if (formData == '') {
             return false;
         }
         await axios
             .post('/api/official_accounts/create', {
+                name: formData.name,
                 webhook_url: formData.webhook_url,
                 channel_id: formData.channel_id,
                 channel_access_token: formData.channel_access_token,
@@ -30,7 +31,7 @@ function CreateAccountForm(props) {
                 const tempAccounts = officialAccounts
                 tempAccounts.push(res.data);
                 setOfficialAccounts(tempAccounts)
-                setFormData({webhook_url:'', channel_id:'', channel_access_token:'', channel_secret:''});
+                setFormData({ webhook_url: '', channel_id: '', channel_access_token: '', channel_secret: '', name: '' });
                 return false;
             })
             .catch(error => {
@@ -49,6 +50,15 @@ function CreateAccountForm(props) {
 
     return (
         <form>
+            <TextField
+                id="name"
+                label="name"
+                variant="outlined"
+                className={classes.textArea}
+                name="name"
+                value={formData.name}
+                onChange={inputChange}
+            />
             <TextField
                 id="webhook_url"
                 label="webhookUrl"
@@ -86,9 +96,9 @@ function CreateAccountForm(props) {
                 onChange={inputChange}
             />
             <Button
-            color="primary"
-            variant="contained"
-            onClick={createAccount}
+                color="primary"
+                variant="contained"
+                onClick={createAccount}
             >
                 登録
             </Button>

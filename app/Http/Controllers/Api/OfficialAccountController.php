@@ -19,10 +19,12 @@ class OfficialAccountController extends Controller
      */
     public function index()
     {
-        // api認証を用いるため、id取得方法が異なる
         $user = User::find(Auth::id());
-        $official_accounts = $user->official_accounts->all();
-        return response()->json($official_accounts, 200);
+        $official_accounts = $user->official_accounts;
+        $official_accounts->map(function ($official_account) {
+            $official_account['permission_name'] = $official_account->pivot->official_account_permission->name;
+        });
+        return response()->json($official_accounts->all(), 200);
     }
 
     /**
@@ -44,6 +46,7 @@ class OfficialAccountController extends Controller
     public function store(Request $request)
     {
         $official_account = new OfficialAccount();
+        $official_account->name = $request->name;
         $official_account->webhook_url = $request->webhook_url;
         $official_account->access_token = $request->access_token;
         $official_account->channel_secret = $request->channel_secret;

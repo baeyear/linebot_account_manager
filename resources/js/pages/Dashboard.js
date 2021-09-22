@@ -5,36 +5,35 @@ import { Button } from '@material-ui/core';
 import MainTable from '../components/MainTable';
 import PostForm from '../components/CreateAccountForm';
 
-const headerList = ['アカウント名', '権限', '編集', '完了'];
+const headerList = ['アカウント名', '権限', '管理'];
 
 function Dashboard() {
     const [officialAccounts, setOfficialAccounts] = useState([]);
-    const [formData, setFormData] = useState({webhook_url:'', channel_id:'', channel_access_token:'', channel_secret:''});
+    const [formData, setFormData] = useState({ webhook_url: '', channel_id: '', channel_access_token: '', channel_secret: '', name: '' });
 
     useEffect(() => {
         getOfficialAccountsData();
-    },[])
+    }, [])
 
     const getOfficialAccountsData = () => {
         axios
-        .get('/api/official_accounts')
-        .then(response => {
-            setOfficialAccounts(response.data);
-            console.log(response.data);
-        })
-        .catch(() => {
-            console.log('通信に失敗しました');
-        });
+            .get('/api/official_accounts')
+            .then(response => {
+                setOfficialAccounts(response.data);
+                console.log(response.data);
+            })
+            .catch(() => {
+                console.log('通信に失敗しました');
+            });
     }
 
     let rows = [];
 
-    officialAccounts.map((officialAccount)=>{
+    officialAccounts.map((officialAccount) => {
         rows.push({
-            name: officialAccount.channel_id,
-            content: officialAccount.webhook_url,
-            editBtn: <Button color="secondary" variant="contained">編集</Button>,
-            deleteBtn: <Button color="primary" variant="contained">完了</Button>,
+            name: officialAccount.name,
+            permissionName: officialAccount.permission_name,
+            editBtn: <Button color="primary" variant="contained">管理</Button>
         })
     })
 
@@ -53,7 +52,7 @@ function Dashboard() {
                             />
                             <MainTable headerList={headerList} rows={rows} />
                         </div>
-                        <Button color="primary" variant="contained"　href={`/hometest`}>Exampleに遷移</Button>
+                        <Button color="primary" variant="contained" href={`/hometest`}>Exampleに遷移</Button>
                     </div>
                 </div>
             </div>

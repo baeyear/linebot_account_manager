@@ -2,18 +2,15 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use App\OfficialAccountPermission;
 
-class UserOfficialAccount extends Model
+class UserOfficialAccount extends Pivot
 {
     protected $table = 'user_official_account';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [
-        'id'
-    ];
+    public function official_account_permission()
+    {
+        return $this->belongsTo(OfficialAccountPermission::class, 'permission_id');
+    }
 }
