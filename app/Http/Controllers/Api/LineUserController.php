@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\LineUser;
 
 class LineUserController extends Controller
 {
@@ -12,9 +13,10 @@ class LineUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $line_users = LineUser::where('account_id', $id)->get();
+        return response()->json($line_users, 200);
     }
 
     /**
@@ -46,7 +48,6 @@ class LineUserController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
