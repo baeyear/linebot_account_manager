@@ -3,7 +3,7 @@ import axios from 'axios';
 import ReactDOM from 'react-dom';
 import { Button } from '@material-ui/core';
 import MainTable from '../components/MainTable';
-import PostForm from '../components/CreateAccountForm';
+import CreateAccountForm from '../components/CreateAccountForm';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -60,7 +60,7 @@ const Dashboard = () => {
                     <div className="card">
                         <div className="card-header">公式アカウント管理</div>
                         <div className="card-body">
-                            <PostForm
+                            <CreateAccountForm
                                 formData={formData}
                                 setFormData={setFormData}
                                 officialAccounts={officialAccounts}
