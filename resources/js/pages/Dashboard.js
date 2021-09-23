@@ -4,12 +4,16 @@ import ReactDOM from 'react-dom';
 import { Button } from '@material-ui/core';
 import MainTable from '../components/MainTable';
 import PostForm from '../components/CreateAccountForm';
+import { useHistory } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const headerList = ['アカウント名', '権限', '管理'];
+const headerList = ['アカウント名', '権限', 'チャット', '管理'];
 
-function Dashboard() {
+const Dashboard = () => {
     const [officialAccounts, setOfficialAccounts] = useState([]);
-    const [formData, setFormData] = useState({ webhook_url: '', channel_id: '', channel_access_token: '', channel_secret: '', name: '' });
+    const [formData, setFormData] = useState({ channel_id: '', access_token: '', channel_secret: '', name: '' });
+    const history = useHistory();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getOfficialAccountsData();
@@ -21,6 +25,7 @@ function Dashboard() {
             .then(response => {
                 setOfficialAccounts(response.data);
                 console.log(response.data);
+                setLoading(false);
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -33,9 +38,20 @@ function Dashboard() {
         rows.push({
             name: officialAccount.name,
             permissionName: officialAccount.permission_name,
-            editBtn: <Button color="primary" variant="contained">管理</Button>
+            chatBtn: <Button color="primary" variant="outlined" onClick={() => history.push('user_list/' + officialAccount.id)}>チャット</Button>,
+            editBtn: <Button color="primary" variant="contained" onClick={() => history.push('official_account_manage/' + officialAccount.id)}>管理</Button>
         })
-    })
+    });
+
+    if (loading) {
+        return (
+            <div className="container">
+                <div className="row justify-content-center">
+                    <CircularProgress />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container">
@@ -52,7 +68,7 @@ function Dashboard() {
                             />
                             <MainTable headerList={headerList} rows={rows} />
                         </div>
-                        <Button color="primary" variant="contained" href={`/hometest`}>Exampleに遷移</Button>
+                        <Button color="primary" variant="contained">Logout</Button>
                     </div>
                 </div>
             </div>
