@@ -31,7 +31,6 @@ class CallbackController extends Controller
 
             $reply = $bot->replyText($reply_token, $reply_message);
 
-
             $userId = $request['events'][0]['source']['userId'];
             $message = $request['events'][0]['message']['text'];
             $user = LineUser::where('line_id', $userId)->first();
@@ -55,6 +54,7 @@ class CallbackController extends Controller
             $chat = new Chat();
             $chat->line_id = $lineUser->id;
             $chat->chat = $message;
+            $chat->is_sent_by_admin = false;
             $chat->save();
 
             return 'ok';
