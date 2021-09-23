@@ -9,11 +9,14 @@ use App\User;
 use App\UserOfficialAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OfficialAccountController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * display official accounts whose owner is user logins in the site.
      *
      * @return \Illuminate\Http\Response
      */
@@ -47,7 +50,8 @@ class OfficialAccountController extends Controller
     {
         $official_account = new OfficialAccount();
         $official_account->name = $request->name;
-        $official_account->webhook_url = $request->webhook_url;
+        // need to fix #一致判定
+        $official_account->webhook_url = Str::random(50);
         $official_account->access_token = $request->access_token;
         $official_account->channel_secret = $request->channel_secret;
         $official_account->channel_id = $request->channel_id;
@@ -74,7 +78,8 @@ class OfficialAccountController extends Controller
      */
     public function show($id)
     {
-        //
+        $official_account = OfficialAccount::find($id);
+        return response()->json($official_account, 200);
     }
 
     /**
