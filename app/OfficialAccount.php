@@ -19,6 +19,6 @@ class OfficialAccount extends Model
 
     public function line_users()
     {
-        return $this->hasMany('App\LineUser');
+        return $this->hasMany('App\LineUser', 'account_id');
     }
 }
