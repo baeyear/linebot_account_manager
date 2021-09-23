@@ -22,16 +22,15 @@ function CreateAccountForm(props) {
         await axios
             .post('/api/official_accounts/create', {
                 name: formData.name,
-                webhook_url: formData.webhook_url,
                 channel_id: formData.channel_id,
-                channel_access_token: formData.channel_access_token,
+                access_token: formData.access_token,
                 channel_secret: formData.channel_secret,
             })
             .then((res) => {
                 const tempAccounts = officialAccounts
                 tempAccounts.push(res.data);
                 setOfficialAccounts(tempAccounts)
-                setFormData({ webhook_url: '', channel_id: '', channel_access_token: '', channel_secret: '', name: '' });
+                setFormData({ channel_id: '', access_token: '', channel_secret: '', name: '' });
                 return false;
             })
             .catch(error => {
@@ -60,15 +59,6 @@ function CreateAccountForm(props) {
                 onChange={inputChange}
             />
             <TextField
-                id="webhook_url"
-                label="webhookUrl"
-                variant="outlined"
-                className={classes.textArea}
-                name="webhook_url"
-                value={formData.webhook_url}
-                onChange={inputChange}
-            />
-            <TextField
                 id="channel_id"
                 label="channelId"
                 variant="outlined"
@@ -78,12 +68,12 @@ function CreateAccountForm(props) {
                 onChange={inputChange}
             />
             <TextField
-                id="channel_access_token"
-                label="channelAccessToken"
+                id="access_token"
+                label="AccessToken"
                 variant="outlined"
                 className={classes.textArea}
-                name="channel_access_token"
-                value={formData.channel_access_token}
+                name="access_token"
+                value={formData.access_token}
                 onChange={inputChange}
             />
             <TextField
