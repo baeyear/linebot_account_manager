@@ -15,7 +15,7 @@ class LineUserController extends Controller
      */
     public function index($id)
     {
-        $line_users = LineUser::where('account_id', $id)->get();
+        $line_users = LineUser::where('account_id', $id)->orderBy('updated_at', 'desc')->get();
         return response()->json($line_users, 200);
     }
 
