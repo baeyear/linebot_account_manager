@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
 import { Button } from '@material-ui/core';
-import MainTable from '../components/MainTable';
-import PostForm from '../components/CreateAccountForm';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import SendChatForm from '../components/SendChatForm';
 
 const Chat = () => {
     const history = useHistory();
@@ -50,6 +49,7 @@ const Chat = () => {
                 </div>
             ))}
 
+            <SendChatForm chats={chats} setChats={setChats} lineUser={history.location.state.lineUser} officialAccount={history.location.state.officialAccount} />
             <Button color="primary" variant="contained" onClick={() => history.goBack()}>Go Back</Button>
         </div>
     );

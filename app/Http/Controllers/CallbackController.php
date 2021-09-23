@@ -33,7 +33,7 @@ class CallbackController extends Controller
 
             $userId = $request['events'][0]['source']['userId'];
             $message = $request['events'][0]['message']['text'];
-            $user = LineUser::where('line_id', $userId)->first();
+            $user = $official_account->line_users->where('line_id', $userId)->first();
             if ($user == NULL) {
                 $profile = $bot->getProfile($userId)->getJSONDecodedBody();
 
@@ -49,15 +49,45 @@ class CallbackController extends Controller
             $user->is_replied_by_admin = false;
             $user->save();
 
-            $lineUser = $official_account->line_users->where('line_id', $userId)->first();
-
             $chat = new Chat();
-            $chat->line_id = $lineUser->id;
+            $chat->line_id = $user->id;
             $chat->chat = $message;
             $chat->is_sent_by_admin = false;
             $chat->save();
 
             return 'ok';
         }
+    }
+
+    /**
+     * function called when event in LINE happens.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function push_message(Request $request)
+    {
+        $official_account = OfficialAccount::where('webhook_url', $request->webhook_url)->first();
+        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($official_account->access_token);
+        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $official_account->channel_secret]);
+
+        $message = $request->chat;
+        $line_id = $request->line_id;
+        $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
+        $bot->pushMessage($line_id, $textMessageBuilder);
+
+        $user = $official_account->line_users->where('line_id', $line_id)->first();
+        $user->current_chat = $message;
+        $user->is_read_by_admin = true;
+        $user->is_replied_by_admin = true;
+        $user->save();
+
+        $chat = new Chat();
+        $chat->line_id = $user->id;
+        $chat->chat = $message;
+        $chat->is_sent_by_admin = true;
+        $chat->save();
+
+        Log::debug(response()->json($chat, 200));
+        return response()->json($chat, 200);
     }
 }
