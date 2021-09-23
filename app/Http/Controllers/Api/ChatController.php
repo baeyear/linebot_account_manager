@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Chat;
 
 class ChatController extends Controller
 {
@@ -12,9 +13,10 @@ class ChatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($line_user_id)
     {
-        //
+        $chats = Chat::where('line_id', $line_user_id)->get();
+        return response()->json($chats, 200);
     }
 
     /**
