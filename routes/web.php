@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OfficialAccountController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,9 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
     Route::get('users', 'Api\UserController@index');
     Route::post('official_accounts/create', 'Api\OfficialAccountController@store');
     Route::get('official_accounts', 'Api\OfficialAccountController@index');
+    Route::get('official_account/{id}', 'Api\OfficialAccountController@show');
+    Route::get('user_list/{id}', 'Api\LineUserController@index');
+    Route::get('chat/{line_user_id}', 'Api\ChatController@index');
 });
 
-Route::get('{any}', 'HomeController@index');
+Route::get('{any}', 'HomeController@index')->where('any', '.*');
