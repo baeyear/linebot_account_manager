@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { Button } from '@material-ui/core';
+import { IconButton, Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory, useParams } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
@@ -72,23 +71,24 @@ const UserList = () => {
     }
 
     return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">{officialAccount.name} トーク</div>
-                        <List className={classes.root}>
-                            {userList.map((item, index) => (
-                                <div key={index}>
-                                    <ListItem button onClick={() => history.push({ pathname: '../chat', state: { lineUser: item, officialAccount: officialAccount } })} alignItems="flex-start">
-                                        <ListItemAvatar>
-                                            <Avatar alt="Remy Sharp" src={item.user_picture_url} />
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={item.displayname}
-                                            secondary={
-                                                <React.Fragment>
-                                                    {/* <Typography
+        <Container>
+            <div className="card">
+                <div className="card-header">
+                    <IconButton onClick={() => history.goBack()} ><ArrowBackIosIcon /></IconButton>
+                    {officialAccount.name} トーク
+                </div>
+                <List className={classes.root}>
+                    {userList.map((item, index) => (
+                        <div key={index}>
+                            <ListItem button onClick={() => history.push({ pathname: '../chat', state: { lineUser: item, officialAccount: officialAccount } })} alignItems="flex-start">
+                                <ListItemAvatar>
+                                    <Avatar alt="Remy Sharp" src={item.user_picture_url} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={item.displayname}
+                                    secondary={
+                                        <React.Fragment>
+                                            {/* <Typography
                                     component="span"
                                     variant="body2"
                                     className={classes.inline}
@@ -96,21 +96,17 @@ const UserList = () => {
                                 >
                                     Ali Connors
                                 </Typography> */}
-                                                    {item.current_chat}
-                                                </React.Fragment>
-                                            }
-                                        />
-                                    </ListItem>
+                                            {item.current_chat}
+                                        </React.Fragment>
+                                    }
+                                />
+                            </ListItem>
 
-                                </div>
-                            ))}
-                        </List>
-                        <Button color="primary" variant="contained" onClick={() => history.goBack()}>Go Back</Button>
-                    </div>
-                </div>
+                        </div>
+                    ))}
+                </List>
             </div>
-
-        </div>
+        </Container>
     );
 }
 

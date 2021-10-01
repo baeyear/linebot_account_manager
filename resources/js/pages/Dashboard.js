@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { Button } from '@material-ui/core';
+import { Button, Container } from '@material-ui/core';
 import MainTable from '../components/MainTable';
 import CreateAccountForm from '../components/CreateAccountForm';
 import { useHistory } from 'react-router-dom';
@@ -54,25 +54,21 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">公式アカウント管理</div>
-                        <div className="card-body">
-                            <CreateAccountForm
-                                formData={formData}
-                                setFormData={setFormData}
-                                officialAccounts={officialAccounts}
-                                setOfficialAccounts={setOfficialAccounts}
-                            />
-                            <MainTable headerList={headerList} rows={rows} />
-                        </div>
-                        <Button color="primary" variant="contained">Logout</Button>
-                    </div>
+        <Container>
+            <div className="card">
+                <div className="card-header">公式アカウント管理</div>
+                <div className="card-body">
+                    <CreateAccountForm
+                        formData={formData}
+                        setFormData={setFormData}
+                        officialAccounts={officialAccounts}
+                        setOfficialAccounts={setOfficialAccounts}
+                    />
+                    <MainTable headerList={headerList} rows={rows} />
                 </div>
+                <Button color="secondary" variant="outlined">Logout</Button>
             </div>
-        </div>
+        </Container>
     );
 }
 

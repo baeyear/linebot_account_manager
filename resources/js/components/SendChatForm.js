@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, IconButton, Box } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import SendIcon from '@material-ui/icons/Send';
 
 const useStyles = makeStyles((theme) => createStyles({
     textArea: {
@@ -44,23 +45,32 @@ function SendChatForm(props) {
 
     return (
         <form>
-            <TextField
-                id="chat"
-                label="chat"
-                variant="outlined"
-                className={classes.textArea}
-                name="chat"
-                value={formData.chat}
-                onChange={inputChange}
-            />
-            <Button
-                color="primary"
-                variant="contained"
-                onClick={sendChat}
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    w: '100%'
+                }}
             >
-                送信
-            </Button>
-        </form>
+                <TextField
+                    fullWidth
+                    multiline
+                    id="chat"
+                    label="chat"
+                    variant="outlined"
+                    className={classes.textArea}
+                    name="chat"
+                    value={formData.chat}
+                    onChange={inputChange}
+                />
+                <IconButton
+                    color="primary"
+                    onClick={sendChat}
+                >
+                    <SendIcon />
+                </IconButton>
+            </Box>
+        </form >
     );
 }
 

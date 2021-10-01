@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { Button } from '@material-ui/core';
+import { IconButton, Container } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const OfficialAccountManage = () => {
     const [officialAccount, setOfficialAccount] = useState([]);
@@ -26,17 +27,14 @@ const OfficialAccountManage = () => {
     }
 
     return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">公式アカウント管理</div>
-
-                        <Button color="primary" variant="contained" onClick={() => history.goBack()}>Go Back</Button>
-                    </div>
+        <Container>
+            <div className="card">
+                <div className="card-header">
+                    <IconButton onClick={() => history.goBack()} ><ArrowBackIosIcon /></IconButton>
+                    公式アカウント管理
                 </div>
             </div>
-        </div>
+        </Container>
     );
 }
 
