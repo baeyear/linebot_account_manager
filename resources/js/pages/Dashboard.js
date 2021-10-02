@@ -6,6 +6,7 @@ import MainTable from '../components/MainTable';
 import CreateAccountForm from '../components/CreateAccountForm';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Loading from './Loading'
 
 const headerList = ['アカウント名', '権限', 'チャット', '管理'];
 
@@ -45,11 +46,7 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="container">
-                <div className="row justify-content-center">
-                    <CircularProgress />
-                </div>
-            </div>
+            <Loading />
         );
     }
 

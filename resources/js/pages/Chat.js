@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { IconButton, Box, Container } from '@material-ui/core';
+import { IconButton, Box, Container, makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MessageBox from '../components/MessageBox';
 import SendChatForm from '../components/SendChatForm';
+import Loading from './Loading'
+
+
+const useStyles = makeStyles(() => ({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh'
+    }
+}));
+
 
 const Chat = () => {
     const history = useHistory();
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(true);
+    const classes = useStyles();
 
     useEffect(() => {
         getChats();
@@ -32,20 +44,18 @@ const Chat = () => {
 
     if (loading) {
         return (
-            <div className="container-fluid">
-                <div className="row justify-content-center align-items-center">
-                    <CircularProgress />
-                </div>
-            </div>
+            <Loading />
         );
     }
 
     return (
-        <Container>
+        <Container
+            className={classes.container}
+        >
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'center'
+                    alignItems: 'center',
                 }}
             >
                 <IconButton onClick={() => history.goBack()} ><ArrowBackIosIcon /></IconButton>
@@ -63,7 +73,10 @@ const Chat = () => {
             </Box>
             <Box
                 sx={{
-                    bgcolor: '#7da4cd'
+                    flexGrow: 1,
+                    overflow: 'scroll',
+                    bgcolor: '#7da4cd',
+                    overflow: 'auto'
                 }}
             >
                 {chats.map((item, index) => (
@@ -71,8 +84,12 @@ const Chat = () => {
                 ))}
             </Box>
 
-
-            <SendChatForm chats={chats} setChats={setChats} lineUser={history.location.state.lineUser} officialAccount={history.location.state.officialAccount} />
+            <SendChatForm
+                chats={chats}
+                setChats={setChats}
+                lineUser={history.location.state.lineUser}
+                officialAccount={history.location.state.officialAccount}
+            />
         </Container>
     );
 }

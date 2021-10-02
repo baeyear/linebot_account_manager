@@ -11,6 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Loading from './Loading';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,11 +63,7 @@ const UserList = () => {
 
     if (loading) {
         return (
-            <div className="container">
-                <div className="row justify-content-center">
-                    <CircularProgress />
-                </div>
-            </div>
+            <Loading />
         );
     }
 
