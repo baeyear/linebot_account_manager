@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme) => createStyles({
     textArea: {
         marginRight: theme.spacing(2),
     },
+    form: {
+        margin: '8px'
+    }
 }));
 
 
@@ -32,6 +35,7 @@ function CreateAccountForm(props) {
                 setOfficialAccounts(tempAccounts)
                 setFormData({ channel_id: '', access_token: '', channel_secret: '', name: '' });
                 return false;
+                // laravelでバリデーションして結果を返す
             })
             .catch(error => {
                 console.log(error);
@@ -45,10 +49,13 @@ function CreateAccountForm(props) {
         formData[key] = value;
         let data = Object.assign({}, formData);
         setFormData(data);
+        // フォームが全て埋まっていればok
     }
 
     return (
-        <form>
+        <form
+            className={classes.form}
+        >
             <TextField
                 id="name"
                 label="name"

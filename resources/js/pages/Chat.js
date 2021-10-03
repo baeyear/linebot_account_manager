@@ -80,7 +80,11 @@ const Chat = () => {
                 }}
             >
                 {chats.map((item, index) => (
-                    <MessageBox key={index} chat={item} />
+                    <MessageBox
+                        key={index}
+                        chat={item}
+                        lineUser={history.location.state.lineUser}
+                    />
                 ))}
             </Box>
 
