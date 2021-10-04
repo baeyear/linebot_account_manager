@@ -15,13 +15,18 @@ class CallbackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function callback(Request $request, $account)
+    public function callback(Request $request, $id)
     {
-        $official_account = OfficialAccount::where('webhook_url', $account)->first();
+        $official_account = OfficialAccount::find($id)->first();
         $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($official_account->access_token);
         $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $official_account->channel_secret]);
 
         $inputs = $request->all();
+
+        if ($inputs['events'] == []) {
+            return response()->json([], 200);
+        }
+
         $message_type = $inputs['events'][0]['type'];
 
         if ($message_type == 'message') {
@@ -66,7 +71,7 @@ class CallbackController extends Controller
      */
     public function push_message(Request $request)
     {
-        $official_account = OfficialAccount::where('webhook_url', $request->webhook_url)->first();
+        $official_account = OfficialAccount::find($request->official_account_id)->first();
         $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($official_account->access_token);
         $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $official_account->channel_secret]);
 
@@ -87,7 +92,6 @@ class CallbackController extends Controller
         $chat->is_sent_by_admin = true;
         $chat->save();
 
-        Log::debug(response()->json($chat, 200));
         return response()->json($chat, 200);
     }
 }

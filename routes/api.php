@@ -14,4 +14,4 @@ use App\Http\Controllers\CallbackController;
 |
 */
 
-Route::post('callback/{account}', 'CallbackController@callback');
+Route::post('callback/{id}', 'CallbackController@callback');
