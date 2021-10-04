@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
 import { IconButton, Box, Container, makeStyles } from '@material-ui/core';
@@ -8,7 +8,6 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MessageBox from '../components/MessageBox';
 import SendChatForm from '../components/SendChatForm';
 import Loading from './Loading'
-
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -24,10 +23,17 @@ const Chat = () => {
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const classes = useStyles();
+    const ref = React.useRef();
 
     useEffect(() => {
         getChats();
-    }, [])
+    }, []);
+
+    useLayoutEffect(() => {
+        if (ref && ref.current) {
+            ref.current.scrollIntoView();
+        }
+    })
 
     const getChats = () => {
         axios
@@ -86,6 +92,7 @@ const Chat = () => {
                         lineUser={history.location.state.lineUser}
                     />
                 ))}
+                <div ref={ref}></div>
             </Box>
 
             <SendChatForm
