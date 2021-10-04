@@ -9,7 +9,7 @@ use App\User;
 use App\UserOfficialAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class OfficialAccountController extends Controller
 {
@@ -48,14 +48,24 @@ class OfficialAccountController extends Controller
      */
     public function store(Request $request)
     {
-        $official_account = new OfficialAccount();
-        $official_account->name = $request->name;
-        // need to fix #一致判定
-        $official_account->webhook_url = Str::random(50);
-        $official_account->access_token = $request->access_token;
-        $official_account->channel_secret = $request->channel_secret;
-        $official_account->channel_id = $request->channel_id;
+        $official_account = OfficialAccount::firstOrNew(
+            [
+                'access_token' => $request->access_token,
+                'channel_id' => $request->channel_id,
+                'channel_secret' => $request->channel_secret
+            ]
+        );
         $official_account->save();
+
+        // check webhook
+        $update_status = $this->updateWebhook($official_account);
+        $bot_json = $this->getBotName($official_account);
+
+        // insert botname
+        if ($update_status == 200) {
+            $official_account->name = json_decode($bot_json, true)['displayName'];
+            $official_account->save();
+        }
 
         $official_account_id = $official_account->id;
         $user_id = Auth::id();
@@ -114,5 +124,55 @@ class OfficialAccountController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Update webhook url
+     *
+     * @param  \App\OfficialAccount  $official_account
+     *
+     * @return int $status
+     */
+    public function updateWebhook($official_account)
+    {
+        $webhook = url('callback/' . $official_account->id);
+        $access_token = $official_account->access_token;
+
+        $client = new Client();
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $access_token,
+                'Content-Type' => 'application/json'
+            ],
+            'json' => [
+                'endpoint' => $webhook
+            ]
+        ];
+
+        $response = $client->put('https://api.line.me/v2/bot/channel/webhook/endpoint', $options);
+        $status = $response->getStatusCode();
+        return $status;
+    }
+
+    /**
+     * Update webhook url
+     *
+     * @param  \App\OfficialAccount  $official_account
+     *
+     * @return string $response
+     */
+    public function getBotName($official_account)
+    {
+        $access_token = $official_account->access_token;
+
+        $client = new Client();
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $access_token,
+            ]
+        ];
+
+        $response = $client->get('https://api.line.me/v2/bot/info', $options);
+        return $response->getBody();
     }
 }

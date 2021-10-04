@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField, Button } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-
+import { useForm } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => createStyles({
     textArea: {
@@ -14,88 +14,76 @@ const useStyles = makeStyles((theme) => createStyles({
 
 
 function CreateAccountForm(props) {
+    const { register, formState: { errors }, handleSubmit, reset } = useForm({
+        defaultValues: {
+            access_token: '',
+            channel_id: '',
+            channel_secret: ''
+        }
+    });
+
+    const onSubmit = (data) => {
+        createAccount(data);
+        reset();
+    };
 
     const classes = useStyles();
-    const { setOfficialAccounts, officialAccounts, setFormData, formData } = props;
+    const { setOfficialAccounts, officialAccounts } = props;
 
-    const createAccount = async (e) => {
-        if (formData == '') {
-            return false;
-        }
+    const createAccount = async (data) => {
         await axios
             .post('/api/official_accounts/create', {
-                name: formData.name,
-                channel_id: formData.channel_id,
-                access_token: formData.access_token,
-                channel_secret: formData.channel_secret,
+                channel_id: data.channel_id,
+                access_token: data.access_token,
+                channel_secret: data.channel_secret,
             })
             .then((res) => {
                 const tempAccounts = officialAccounts
                 tempAccounts.push(res.data);
-                setOfficialAccounts(tempAccounts)
-                setFormData({ channel_id: '', access_token: '', channel_secret: '', name: '' });
-                return false;
+                setOfficialAccounts(tempAccounts);
                 // laravelでバリデーションして結果を返す
             })
             .catch(error => {
                 console.log(error);
-                return false;
             });
-    }
-
-    const inputChange = (e) => {
-        const key = e.target.name;
-        const value = e.target.value;
-        formData[key] = value;
-        let data = Object.assign({}, formData);
-        setFormData(data);
-        // フォームが全て埋まっていればok
     }
 
     return (
         <form
             className={classes.form}
+            onSubmit={handleSubmit(onSubmit)}
         >
             <TextField
-                id="name"
-                label="name"
-                variant="outlined"
-                className={classes.textArea}
-                name="name"
-                value={formData.name}
-                onChange={inputChange}
-            />
-            <TextField
-                id="channel_id"
+                fullWidth
                 label="channelId"
                 variant="outlined"
-                className={classes.textArea}
                 name="channel_id"
-                value={formData.channel_id}
-                onChange={inputChange}
+                error={Boolean(errors.channel_id)}
+                helperText={errors.channel_id && errors.channel_id.message}
+                {...register('channel_id', { required: '入力してください' })}
             />
             <TextField
-                id="access_token"
+                fullWidth
                 label="AccessToken"
                 variant="outlined"
-                className={classes.textArea}
                 name="access_token"
-                value={formData.access_token}
-                onChange={inputChange}
+                error={Boolean(errors.access_token)}
+                helperText={errors.access_token && errors.access_token.message}
+                {...register('access_token', { required: '入力してください' })}
             />
             <TextField
-                id="channel_secret"
+                fullWidth
                 label="channelSecret"
                 variant="outlined"
-                className={classes.textArea}
                 name="channel_secret"
-                value={formData.channel_secret}
-                onChange={inputChange}
+                error={Boolean(errors.channel_secret)}
+                helperText={errors.channel_secret && errors.channel_secret.message}
+                {...register('channel_secret', { required: '入力してください' })}
             />
             <Button
                 color="primary"
                 variant="contained"
-                onClick={createAccount}
+                type="submit"
             >
                 登録
             </Button>
