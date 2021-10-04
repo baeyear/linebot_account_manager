@@ -15,7 +15,7 @@ class ChatController extends Controller
      */
     public function index($line_user_id)
     {
-        $chats = Chat::where('line_id', $line_user_id)->orderBy('created_at', 'desc')->get();
+        $chats = Chat::where('line_id', $line_user_id)->orderBy('created_at', 'asc')->get();
         return response()->json($chats, 200);
     }
 
