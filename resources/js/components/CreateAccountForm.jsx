@@ -38,9 +38,8 @@ function CreateAccountForm(props) {
                 channel_secret: data.channel_secret,
             })
             .then((res) => {
-                const tempAccounts = officialAccounts
-                tempAccounts.push(res.data);
-                setOfficialAccounts(tempAccounts);
+                var newOfficialAccounts = [...officialAccounts, res.data];
+                setOfficialAccounts(newOfficialAccounts);
                 // laravelでバリデーションして結果を返す
             })
             .catch(error => {
