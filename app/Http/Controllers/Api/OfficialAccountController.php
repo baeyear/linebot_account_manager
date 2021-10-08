@@ -30,15 +30,6 @@ class OfficialAccountController extends Controller
         return response()->json($official_accounts->all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -48,6 +39,7 @@ class OfficialAccountController extends Controller
      */
     public function store(Request $request)
     {
+        // トランザクション追加する。
         $official_account = OfficialAccount::firstOrNew(
             [
                 'access_token' => $request->access_token,
@@ -71,17 +63,22 @@ class OfficialAccountController extends Controller
         $user_id = Auth::id();
         $permission_id = 1;
 
+        $official_account->webhook_url = url('/callback/' . $official_account->id);
+        $official_account->save();
+
         $user_official_account = new UserOfficialAccount();
         $user_official_account->user_id = $user_id;
         $user_official_account->official_account_id = $official_account_id;
         $user_official_account->permission_id = $permission_id;
         $user_official_account->save();
 
+        $official_account['permission_name'] = $official_account->pivot->official_account_permission->name;
+
         return response()->json($official_account, 200);
     }
 
     /**
-     * Display the specified resource.
+     * Display an official account.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -90,6 +87,23 @@ class OfficialAccountController extends Controller
     {
         $official_account = OfficialAccount::find($id);
         return response()->json($official_account, 200);
+    }
+
+    /**
+     * Display users an official account has.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showUsers($id)
+    {
+        $official_account = OfficialAccount::find($id);
+        $users = $official_account->users;
+        foreach ($users as $user) {
+            $user['permission_name'] = $user->pivot->official_account_permission->name;
+        }
+
+        return response()->json($users, 200);
     }
 
     /**
@@ -155,7 +169,7 @@ class OfficialAccountController extends Controller
     }
 
     /**
-     * Update webhook url
+     * fetch bot name from LINE
      *
      * @param  \App\OfficialAccount  $official_account
      *
