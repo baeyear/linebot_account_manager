@@ -1,15 +1,11 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import OfficialAccountManage from './pages/OfficialAccountManage';
 import UserList from './pages/UserList';
 import Chat from './pages/Chat';
-
+import NotFound from './pages/Chat';
 
 function App() {
   return (
@@ -18,14 +14,17 @@ function App() {
         <Route path='/home' exact >
           <Dashboard />
         </Route>
-        <Route path='/official_account_manage/:id'>
+        <Route path='/official_account_manage/:id' exact>
           <OfficialAccountManage />
         </Route>
-        <Route path='/user_list/:id'>
+        <Route path='/user_list/:id' exact>
           <UserList />
         </Route>
-        <Route path='/chat'>
+        <Route path='/chat' exact>
           <Chat />
+        </Route>
+        <Route path='*'>
+          <Redirect to="/home" />
         </Route>
       </Switch>
     </div>
