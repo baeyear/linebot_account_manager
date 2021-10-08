@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactDOM from "react-dom";
-import { Button, Container } from "@material-ui/core";
+import {
+    Button,
+    Container,
+    IconButton,
+    AppBar,
+    Toolbar,
+    Typography,
+} from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import AccountList from "../components/AccountList";
 import CreateAccountForm from "../components/CreateAccountForm";
 import Loading from "./Loading";
-import { Redirect } from "react-router-dom";
+import Header from "../components/Header";
+
+const useStyles = makeStyles((theme) => ({
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    title: {
+        flexGrow: 1,
+    },
+}));
 
 const Dashboard = () => {
     const [officialAccounts, setOfficialAccounts] = useState();
     const [loading, setLoading] = useState(true);
-    let csrf_token = document.head.querySelector(
-        'meta[name="csrf-token"]'
-    ).content;
+    const classes = useStyles();
 
     useEffect(() => {
         getOfficialAccountsData();
@@ -38,8 +53,8 @@ const Dashboard = () => {
 
     return (
         <Container>
+            <Header isHome={true} />
             <div className="card">
-                <div className="card-header">公式アカウント管理</div>
                 <div className="card-body">
                     <CreateAccountForm
                         officialAccounts={officialAccounts}
@@ -47,13 +62,6 @@ const Dashboard = () => {
                     />
                     <AccountList officialAccounts={officialAccounts} />
                 </div>
-
-                <form method="POST" action="/logout">
-                    <input type="hidden" name="_token" value={csrf_token} />
-                    <Button color="secondary" variant="outlined" type="submit">
-                        Logout
-                    </Button>
-                </form>
             </div>
         </Container>
     );
