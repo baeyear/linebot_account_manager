@@ -6,27 +6,9 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { LocalDiningOutlined } from "@material-ui/icons";
 
 const OfficialAccountList = (props) => {
-    const [users, setUsers] = useState([]);
-    const { officialAccountId } = props;
-
-    useEffect(() => {
-        getUsers();
-    }, []);
-
-    const getUsers = () => {
-        axios
-            .get("/api/official_account/" + officialAccountId + "/users")
-            .then((response) => {
-                setUsers(response.data);
-                console.log(response.data);
-            })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
-    };
+    const { users } = props;
 
     return (
         <List>

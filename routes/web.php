@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OfficialAccountController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+URL::forceScheme('https');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -26,6 +28,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
     Route::post('official_accounts/create', 'Api\OfficialAccountController@store');
     Route::get('official_accounts', 'Api\OfficialAccountController@index');
     Route::get('official_account/{id}', 'Api\OfficialAccountController@show');
+    Route::get('official_account/{id}/users', 'Api\OfficialAccountController@showUsers');
     Route::get('user_list/{id}', 'Api\LineUserController@index');
     Route::get('chat/{line_user_id}', 'Api\ChatController@index');
     Route::post('chat', 'CallbackController@push_message');

@@ -69,7 +69,6 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>
     <body>
-        <div id="example"></div>
         <div class="flex-center position-ref full-height">
 
             <div class="content">
