@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { useForm } from "react-hook-form";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { useForm, Controller } from "react-hook-form";
 import StatusSnackbar from "./StatusSnackbar";
 import Loading from "../pages/Loading";
 
@@ -13,15 +19,28 @@ const useStyles = makeStyles((theme) =>
     })
 );
 
+const options = [
+    {
+        title: "管理者",
+        value: "admin",
+    },
+    {
+        title: "使用者",
+        value: "worker",
+    },
+];
+
 function AddUserForm(props) {
     const {
         register,
         formState: { errors },
         handleSubmit,
         reset,
+        control,
     } = useForm({
         defaultValues: {
             email: "",
+            permission: "",
         },
     });
 
@@ -56,6 +75,8 @@ function AddUserForm(props) {
                     "登録できませんでした。入力内容を確認してください。"
                 );
                 setOpen(true);
+                console.log(data.permission);
+                console.log(data.email);
             })
             .then(() => {
                 setProgress(false);
@@ -76,6 +97,35 @@ function AddUserForm(props) {
                         required: "入力してください",
                     })}
                 />
+
+                <FormControl
+                    error={errors?.hasOwnProperty("permission")}
+                    fullWidth
+                    required
+                >
+                    <FormLabel>権限設定</FormLabel>
+                    <FormHelperText>
+                        {errors?.radio && errors?.radio.message}
+                    </FormHelperText>
+                    <Controller
+                        name="permission"
+                        control={control}
+                        rules={{ required: true }}
+                        render={() => (
+                            <RadioGroup>
+                                {options.map((option, i) => (
+                                    <FormControlLabel
+                                        value={option.value}
+                                        control={<Radio />}
+                                        label={option.title}
+                                        key={i}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        )}
+                    />
+                </FormControl>
+
                 <Button color="primary" variant="contained" type="submit">
                     登録
                 </Button>
