@@ -45,34 +45,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const UserList = () => {
-    const [officialAccount, setOfficialAccount] = useState([]);
+const UserList = (props) => {
     const [userList, setUserList] = useState([]);
     const [loading, setLoading] = useState(true);
     const history = useHistory();
-    const { id } = useParams();
+    const officialAccount = history.location.state.officialAccount;
     const classes = useStyles();
 
     useEffect(() => {
-        getOfficialAccountData();
         getUserList();
     }, []);
 
-    const getOfficialAccountData = () => {
-        axios
-            .get("/api/official_account/" + id)
-            .then((response) => {
-                setOfficialAccount(response.data);
-                console.log(response.data);
-            })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
-    };
-
     const getUserList = () => {
         axios
-            .get("/api/user_list/" + id)
+            .get("/api/user_list/" + officialAccount.id)
             .then((response) => {
                 setUserList(response.data);
                 console.log(response.data);

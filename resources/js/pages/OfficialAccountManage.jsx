@@ -9,31 +9,17 @@ import Header from "../components/Header";
 import AddUserForm from "../components/AddUserForm";
 
 const OfficialAccountManage = () => {
-    const [officialAccount, setOfficialAccount] = useState([]);
     const [users, setUsers] = useState([]);
     const history = useHistory();
-    const { id } = useParams();
+    const officialAccount = history.location.state.officialAccount;
 
     useEffect(() => {
-        getOfficialAccountData();
         getUsers();
     }, []);
 
-    const getOfficialAccountData = () => {
-        axios
-            .get("/api/official_account/" + id)
-            .then((response) => {
-                setOfficialAccount(response.data);
-                console.log(response.data);
-            })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
-    };
-
     const getUsers = () => {
         axios
-            .get("/api/official_account/" + id + "/users")
+            .get("/api/official_account/" + officialAccount.id + "/users")
             .then((response) => {
                 setUsers(response.data);
                 console.log(response.data);
