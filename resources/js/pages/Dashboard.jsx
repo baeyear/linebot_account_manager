@@ -10,7 +10,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import AccountList from "../components/AccountList";
+import AccountIndexList from "../components/AccountIndexList";
 import CreateAccountForm from "../components/CreateAccountForm";
 import Loading from "./Loading";
 import Header from "../components/Header";
@@ -60,7 +60,7 @@ const Dashboard = () => {
                         officialAccounts={officialAccounts}
                         setOfficialAccounts={setOfficialAccounts}
                     />
-                    <AccountList officialAccounts={officialAccounts} />
+                    <AccountIndexList officialAccounts={officialAccounts} />
                 </div>
             </div>
         </Container>

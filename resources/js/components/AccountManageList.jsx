@@ -7,7 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
-const OfficialAccountList = (props) => {
+const AccountManageList = (props) => {
     const { users } = props;
 
     return (
@@ -34,4 +34,4 @@ const OfficialAccountList = (props) => {
     );
 };
 
-export default OfficialAccountList;
+export default AccountManageList;

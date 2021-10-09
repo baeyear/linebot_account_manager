@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { IconButton, Container, Box } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import OfficialAccountList from "../components/OfficialAccountList";
+import AccountManageList from "../components/AccountManageList";
 import Header from "../components/Header";
 import AddUserForm from "../components/AddUserForm";
 
@@ -36,7 +36,7 @@ const OfficialAccountManage = () => {
                 <Box>アカウント名: {officialAccount.name}</Box>
                 <Box>Webhook URL: {officialAccount.webhook_url}</Box>
                 <AddUserForm users={users} />
-                <OfficialAccountList users={users} />
+                <AccountManageList users={users} />
             </div>
         </Container>
     );

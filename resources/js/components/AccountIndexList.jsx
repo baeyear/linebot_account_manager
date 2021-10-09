@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => createStyles({}));
 
-function AccountList(props) {
+function AccountIndexList(props) {
     const classes = useStyles();
     const { officialAccounts } = props;
     const history = useHistory();
@@ -61,4 +61,4 @@ function AccountList(props) {
     );
 }
 
-export default AccountList;
+export default AccountIndexList;
