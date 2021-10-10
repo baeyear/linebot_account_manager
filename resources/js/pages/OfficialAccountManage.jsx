@@ -7,17 +7,24 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import AccountManageList from "../components/AccountManageList";
 import Header from "../components/Header";
 import AddUserForm from "../components/AddUserForm";
+import ReturnDialog from "../components/ReturnDialog";
 
 const OfficialAccountManage = () => {
     const [users, setUsers] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [officialAccount, setOfficialAccount] = useState("");
     const history = useHistory();
-    const officialAccount = history.location.state.officialAccount;
 
     useEffect(() => {
-        getUsers();
+        if (history.location.state) {
+            setOfficialAccount(history.location.state.officialAccount);
+            getUsers(history.location.state.officialAccount);
+        } else {
+            setOpenDialog(true);
+        }
     }, []);
 
-    const getUsers = () => {
+    const getUsers = (officialAccount) => {
         axios
             .get("/api/official_account/" + officialAccount.id + "/users")
             .then((response) => {
@@ -31,6 +38,7 @@ const OfficialAccountManage = () => {
 
     return (
         <Container>
+            <ReturnDialog openDialog={openDialog} />
             <Header />
             <div className="card">
                 <Box>アカウント名: {officialAccount.name}</Box>

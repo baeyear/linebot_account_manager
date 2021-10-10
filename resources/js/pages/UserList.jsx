@@ -15,6 +15,7 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Avatar from "@material-ui/core/Avatar";
 import Loading from "./Loading";
 import Header from "../components/Header";
+import ReturnDialog from "../components/ReturnDialog";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -48,15 +49,23 @@ const useStyles = makeStyles((theme) => ({
 const UserList = (props) => {
     const [userList, setUserList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [officialAccount, setOfficialAccount] = useState(false);
     const history = useHistory();
-    const officialAccount = history.location.state.officialAccount;
+
     const classes = useStyles();
 
     useEffect(() => {
-        getUserList();
+        if (history.location.state) {
+            setOfficialAccount(history.location.state.officialAccount);
+            getUserList(history.location.state.officialAccount);
+        } else {
+            setOpenDialog(true);
+            setLoading(false);
+        }
     }, []);
 
-    const getUserList = () => {
+    const getUserList = (officialAccount) => {
         axios
             .get("/api/user_list/" + officialAccount.id)
             .then((response) => {
@@ -75,6 +84,7 @@ const UserList = (props) => {
 
     return (
         <Container className={classes.container}>
+            <ReturnDialog openDialog={openDialog} />
             <Header title={officialAccount.name + " トーク"} />
 
             {userList.map((item, index) => (

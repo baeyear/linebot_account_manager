@@ -7,6 +7,7 @@ import MessageBox from "../components/MessageBox";
 import SendChatForm from "../components/SendChatForm";
 import Loading from "./Loading";
 import Header from "../components/Header";
+import ReturnDialog from "../components/ReturnDialog";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -19,12 +20,22 @@ const useStyles = makeStyles(() => ({
 const Chat = () => {
     const history = useHistory();
     const [chats, setChats] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [lineUser, setLineUser] = useState("");
+    const [officialAccount, setOfficialAccount] = useState("");
     const classes = useStyles();
     const ref = React.useRef();
 
     useEffect(() => {
-        getChats();
+        if (history.location.state) {
+            setOfficialAccount(history.location.state.officialAccount);
+            setLineUser(history.location.state.lineUser);
+            getChats(history.location.state.lineUser);
+        } else {
+            setOpenDialog(true);
+            setLoading(false);
+        }
     }, []);
 
     useLayoutEffect(() => {
@@ -33,9 +44,9 @@ const Chat = () => {
         }
     });
 
-    const getChats = () => {
+    const getChats = (lineUser) => {
         axios
-            .get("/api/chat/" + history.location.state.lineUser.id)
+            .get("/api/chat/" + lineUser.id)
             .then((response) => {
                 setChats(response.data);
                 console.log(response.data);
@@ -52,12 +63,9 @@ const Chat = () => {
 
     return (
         <Container className={classes.container}>
+            <ReturnDialog openDialog={openDialog} />
             <Header
-                title={
-                    history.location.state.lineUser.displayname +
-                    " / " +
-                    history.location.state.officialAccount.name
-                }
+                title={lineUser.displayname + " / " + officialAccount.name}
             />
             <Box
                 sx={{
@@ -68,11 +76,7 @@ const Chat = () => {
                 }}
             >
                 {chats.map((item, index) => (
-                    <MessageBox
-                        key={index}
-                        chat={item}
-                        lineUser={history.location.state.lineUser}
-                    />
+                    <MessageBox key={index} chat={item} lineUser={lineUser} />
                 ))}
                 <div ref={ref}></div>
             </Box>
@@ -80,8 +84,8 @@ const Chat = () => {
             <SendChatForm
                 chats={chats}
                 setChats={setChats}
-                lineUser={history.location.state.lineUser}
-                officialAccount={history.location.state.officialAccount}
+                lineUser={lineUser}
+                officialAccount={officialAccount}
             />
         </Container>
     );
