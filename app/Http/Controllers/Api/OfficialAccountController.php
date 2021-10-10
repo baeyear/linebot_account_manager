@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateOfficialAccountRequest;
+use Illuminate\Support\Facades\DB;
 use App\OfficialAccount;
 use App\User;
 use App\UserOfficialAccount;
@@ -37,44 +39,44 @@ class OfficialAccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateOfficialAccountRequest $request)
     {
-        // トランザクション追加する。
-        $official_account = OfficialAccount::firstOrNew(
-            [
-                'access_token' => $request->access_token,
-                'channel_id' => $request->channel_id,
-                'channel_secret' => $request->channel_secret
-            ]
-        );
-        $official_account->save();
+        DB::beginTransaction();
+        try {
+            // DBに同一データがないか確認
+            $official_account = OfficialAccount::create(
+                [
+                    'access_token' => $request->access_token,
+                    'channel_id' => $request->channel_id,
+                    'channel_secret' => $request->channel_secret
+                ]
+            );
 
-        // check webhook
-        $update_status = $this->updateWebhook($official_account);
-        $bot_json = $this->getBotName($official_account);
+            // LINEにリクエスト
+            $update_status = $this->updateWebhook($official_account);
+            $bot_json = $this->getBotName($official_account);
 
-        // insert botname
-        if ($update_status == 200) {
+            // webhook, botnameの登録
             $official_account->name = json_decode($bot_json, true)['displayName'];
+            $official_account->webhook_url = url('/callback/' . $official_account->id);
             $official_account->save();
+
+            // 中間テーブルへの登録
+            $permission_id = 1;
+            $user_official_account = new UserOfficialAccount();
+            $user_official_account->user_id = Auth::id();
+            $user_official_account->official_account_id = $official_account->id;
+            $user_official_account->permission_id = $permission_id;
+            $user_official_account->save();
+
+            $official_account['permission_name'] = $official_account->pivot->official_account_permission->name;
+            DB::commit();
+            return response()->json($official_account, 200);
+        } catch (\Throwable $th) {
+            Log::debug($th);
+            DB::rollback();
+            return response()->json(['message' => $th->getMessage()], 500);
         }
-
-        $official_account_id = $official_account->id;
-        $user_id = Auth::id();
-        $permission_id = 1;
-
-        $official_account->webhook_url = url('/callback/' . $official_account->id);
-        $official_account->save();
-
-        $user_official_account = new UserOfficialAccount();
-        $user_official_account->user_id = $user_id;
-        $user_official_account->official_account_id = $official_account_id;
-        $user_official_account->permission_id = $permission_id;
-        $user_official_account->save();
-
-        $official_account['permission_name'] = $official_account->pivot->official_account_permission->name;
-
-        return response()->json($official_account, 200);
     }
 
     /**
@@ -149,23 +151,33 @@ class OfficialAccountController extends Controller
      */
     public function updateWebhook($official_account)
     {
-        $webhook = url('callback/' . $official_account->id);
-        $access_token = $official_account->access_token;
+        try {
+            $webhook = url('callback/' . $official_account->id);
+            $access_token = $official_account->access_token;
 
-        $client = new Client();
-        $options = [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $access_token,
-                'Content-Type' => 'application/json'
-            ],
-            'json' => [
-                'endpoint' => $webhook
-            ]
-        ];
+            $client = new Client();
+            $options = [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    'endpoint' => $webhook
+                ]
+            ];
 
-        $response = $client->put('https://api.line.me/v2/bot/channel/webhook/endpoint', $options);
-        $status = $response->getStatusCode();
-        return $status;
+            $response = $client->put('https://api.line.me/v2/bot/channel/webhook/endpoint', $options);
+            $status = $response->getStatusCode();
+
+            if ($status == 200) {
+                return $status;
+            } else {
+                return abort(500, 'webhook URLをLINEに登録できませんでした。');
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            abort(500, 'webhook URLをLINEに登録できませんでした。');
+        }
     }
 
     /**
@@ -177,16 +189,27 @@ class OfficialAccountController extends Controller
      */
     public function getBotName($official_account)
     {
-        $access_token = $official_account->access_token;
+        try {
+            $access_token = $official_account->access_token;
 
-        $client = new Client();
-        $options = [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $access_token,
-            ]
-        ];
+            $client = new Client();
+            $options = [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $access_token,
+                ]
+            ];
 
-        $response = $client->get('https://api.line.me/v2/bot/info', $options);
-        return $response->getBody();
+            $response = $client->get('https://api.line.me/v2/bot/info', $options);
+            $status = $response->getStatusCode();
+
+            if ($status == 200) {
+                return $response->getBody();
+            } else {
+                return abort('アカウント名をLINEから取得できませんでした。', 500);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return abort('アカウント名をLINEから取得できませんでした。', 500);
+        }
     }
 }

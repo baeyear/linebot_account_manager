@@ -59,9 +59,8 @@ function CreateAccountForm(props) {
             })
             .catch((error) => {
                 setType("error");
-                setMessage(
-                    "登録できませんでした。入力内容を確認してください。"
-                );
+                console.log(error.response);
+                setMessage(error.response.data.message);
                 setOpen(true);
             })
             .then(() => {
