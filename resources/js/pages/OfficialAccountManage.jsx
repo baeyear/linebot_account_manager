@@ -44,7 +44,10 @@ const OfficialAccountManage = () => {
                 <Box>アカウント名: {officialAccount.name}</Box>
                 <Box>Webhook URL: {officialAccount.webhook_url}</Box>
                 <AddUserForm users={users} />
-                <AccountManageList users={users} />
+                <AccountManageList
+                    users={users}
+                    officialAccount={officialAccount}
+                />
             </div>
         </Container>
     );

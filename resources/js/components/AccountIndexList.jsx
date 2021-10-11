@@ -40,7 +40,9 @@ function AccountIndexList(props) {
                         />
                         <ListItemSecondaryAction>
                             <IconButton
-                                disabled={!officialAccount.pivot.permission_id}
+                                disabled={
+                                    officialAccount.pivot.permission_id !== 1
+                                }
                                 type="submit"
                                 onClick={() =>
                                     history.push({
