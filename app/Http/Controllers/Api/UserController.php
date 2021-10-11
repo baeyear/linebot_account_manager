@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     public $successStatus = 200;
+    public $TRUE = 1;
+    public $FALSE = 1;
 
     /**
      * Display a listing of the resource.
@@ -87,5 +90,35 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPermission(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+            $user->official_accounts()->detach($request->official_account_id);
+            if (Auth::id() == $request->user_id) {
+                return response()->json([
+                    'message' => '権限が削除されました。',
+                    'deletedOwn' => $this->TRUE
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => '権限が削除されました。',
+                    'deletedOwn' => $this->FALSE
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => '権限を削除できませんでした。'
+            ], 500);
+        }
     }
 }
