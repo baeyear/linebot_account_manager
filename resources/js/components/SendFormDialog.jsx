@@ -8,30 +8,31 @@ import {
     DialogActions,
 } from "@material-ui/core";
 
-const ReturnDialog = (props) => {
-    const { openDialog } = props;
+const SendFormDialog = (props) => {
+    const { open, title, message, onSubmitNo, onSubmitYes } = props;
 
     return (
         <Dialog
-            open={openDialog}
+            open={open}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="simple-dialog-title">
-                ページにアクセスできません
-            </DialogTitle>
+            <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    ページが存在しないか、アクセスが許可されていません。
+                    {message}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button href="/home" color="primary">
-                    ホームに戻る
+                <Button onClick={onSubmitNo} color="primary">
+                    No
+                </Button>
+                <Button onClick={onSubmitYes} color="primary">
+                    Yes
                 </Button>
             </DialogActions>
         </Dialog>
     );
 };
 
-export default ReturnDialog;
+export default SendFormDialog;

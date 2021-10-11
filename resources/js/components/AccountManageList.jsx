@@ -7,6 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import StatusSnackbar from "./StatusSnackbar";
+import SendFormDialog from "./SendFormDialog";
 
 const AccountManageList = (props) => {
     const { users, officialAccount } = props;
@@ -25,6 +26,8 @@ const AccountManageList = (props) => {
     const [message, setMessage] = useState();
     const [type, setType] = useState();
     const [open, setOpen] = useState(false);
+    const [openCheckDialog, setOpenCheckDialog] = useState(false);
+    const [user, setUser] = useState({ name: "", id: "" });
 
     const deletePermission = (userId, officialAccountId) => {
         axios
@@ -62,12 +65,10 @@ const AccountManageList = (props) => {
                         />
                         <ListItemSecondaryAction>
                             <IconButton
-                                onClick={() =>
-                                    deletePermission(
-                                        user.id,
-                                        officialAccount.id
-                                    )
-                                }
+                                onClick={() => {
+                                    setUser({ name: user.name, id: user.id });
+                                    setOpenCheckDialog(true);
+                                }}
                             >
                                 <HighlightOffIcon color="secondary" />
                             </IconButton>
@@ -80,6 +81,15 @@ const AccountManageList = (props) => {
                 type={type}
                 message={message}
                 setOpen={setOpen}
+            />
+            <SendFormDialog
+                open={openCheckDialog}
+                title="権限削除"
+                message={user.name + "の権限を削除しますか？"}
+                onSubmitNo={() => setOpenCheckDialog(false)}
+                onSubmitYes={() =>
+                    deletePermission(user.id, officialAccount.id)
+                }
             />
         </List>
     );
