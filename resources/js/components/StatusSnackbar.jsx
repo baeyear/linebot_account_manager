@@ -7,20 +7,16 @@ function Alert(props) {
 }
 
 function StatusSnackbar(props) {
-    const { type, message, open, setOpen } = props;
-
-    const handleClose = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-
-        setOpen(false);
-    };
+    const { status, handleClose } = props;
 
     return (
-        <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity={type}>
-                {message}
+        <Snackbar
+            open={status.open}
+            autoHideDuration={10000}
+            onClose={handleClose}
+        >
+            <Alert onClose={handleClose} severity={status.type}>
+                {status.message}
             </Alert>
         </Snackbar>
     );

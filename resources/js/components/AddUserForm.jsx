@@ -51,10 +51,18 @@ function AddUserForm(props) {
 
     const classes = useStyles();
     const { users, setUsers } = props;
-    const [type, setType] = useState();
-    const [message, setMessage] = useState();
-    const [open, setOpen] = useState();
     const [progress, setProgress] = useState();
+    const [snackbar, setSnackbar] = useState({
+        message: "",
+        type: "",
+        open: false,
+    });
+    const handleClose = (event, reason) => {
+        if (reason == "clickaway") {
+            return;
+        }
+        setSnackbar({ ...snackbar, open: false });
+    };
 
     const addUser = async (data) => {
         setProgress(true);
@@ -65,16 +73,19 @@ function AddUserForm(props) {
             .then((res) => {
                 var newUsers = [...users, res.data];
                 setUsers(newUsers);
-                setType("success");
-                setMessage("登録完了!");
-                setOpen(true);
+                setSnackbar({
+                    message: "登録完了しました。",
+                    type: "success",
+                    open: true,
+                });
             })
             .catch((error) => {
-                setType("error");
-                setMessage(
-                    "登録できませんでした。入力内容を確認してください。"
-                );
-                setOpen(true);
+                setSnackbar({
+                    message:
+                        "登録できませんでした。入力内容を確認してください。",
+                    type: "error",
+                    open: true,
+                });
                 console.log(data.permission);
                 console.log(data.email);
             })
@@ -129,12 +140,7 @@ function AddUserForm(props) {
                 <Button color="primary" variant="contained" type="submit">
                     登録
                 </Button>
-                <StatusSnackbar
-                    message={message}
-                    open={open}
-                    setOpen={setOpen}
-                    type={type}
-                />
+                <StatusSnackbar status={snackbar} handleClose={handleClose} />
             </form>
         );
     }

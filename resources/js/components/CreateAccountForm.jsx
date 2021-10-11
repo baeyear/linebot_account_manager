@@ -35,11 +35,20 @@ function CreateAccountForm(props) {
         reset();
     };
 
+    const [snackbar, setSnackbar] = useState({
+        message: "",
+        type: "",
+        open: false,
+    });
+    const handleClose = (event, reason) => {
+        if (reason == "clickaway") {
+            return;
+        }
+        setSnackbar({ ...snackbar, open: false });
+    };
+
     const classes = useStyles();
     const { setOfficialAccounts, officialAccounts } = props;
-    const [type, setType] = useState();
-    const [message, setMessage] = useState();
-    const [open, setOpen] = useState();
     const [progress, setProgress] = useState();
 
     const createAccount = async (data) => {
@@ -53,15 +62,19 @@ function CreateAccountForm(props) {
             .then((res) => {
                 var newOfficialAccounts = [...officialAccounts, res.data];
                 setOfficialAccounts(newOfficialAccounts);
-                setType("success");
-                setMessage("登録完了!");
-                setOpen(true);
+                setSnackbar({
+                    message: "登録完了しました。",
+                    type: "success",
+                    open: true,
+                });
             })
             .catch((error) => {
-                setType("error");
                 console.log(error.response);
-                setMessage(error.response.data.message);
-                setOpen(true);
+                setSnackbar({
+                    message: error.response.data.message,
+                    type: "error",
+                    open: true,
+                });
             })
             .then(() => {
                 setProgress(false);
@@ -112,12 +125,7 @@ function CreateAccountForm(props) {
                 <Button color="primary" variant="contained" type="submit">
                     登録
                 </Button>
-                <StatusSnackbar
-                    message={message}
-                    open={open}
-                    setOpen={setOpen}
-                    type={type}
-                />
+                <StatusSnackbar status={snackbar} handleClose={handleClose} />
             </form>
         );
     }

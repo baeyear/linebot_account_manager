@@ -23,9 +23,6 @@ const AccountManageList = (props) => {
         setSnackbar({ ...snackbar, open: false });
     };
 
-    const [message, setMessage] = useState();
-    const [type, setType] = useState();
-    const [open, setOpen] = useState(false);
     const [openCheckDialog, setOpenCheckDialog] = useState(false);
     const [user, setUser] = useState({ name: "", id: "" });
 
@@ -39,18 +36,22 @@ const AccountManageList = (props) => {
             })
             .then((res) => {
                 console.log(userId);
-                setMessage(res.data.message);
-                setType("success");
-                setOpen(true);
+                setSnackbar({
+                    message: res.data.message,
+                    type: "success",
+                    open: true,
+                });
                 if (res.data.deletedOwn) {
                     window.location.href = "/home";
                 }
             })
             .catch((error) => {
                 console.log(error);
-                setMessage(error.response.data.message);
-                setType("error");
-                setOpen(true);
+                setSnackbar({
+                    message: error.response.data.message,
+                    type: "error",
+                    open: true,
+                });
             });
     };
 
@@ -76,12 +77,7 @@ const AccountManageList = (props) => {
                     </ListItem>
                 );
             })}
-            <StatusSnackbar
-                open={open}
-                type={type}
-                message={message}
-                setOpen={setOpen}
-            />
+            <StatusSnackbar status={snackbar} handleClose={handleClose} />
             <SendFormDialog
                 open={openCheckDialog}
                 title="権限削除"
