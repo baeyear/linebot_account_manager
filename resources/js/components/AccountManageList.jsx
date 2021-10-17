@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import axios from "axios";
 import { IconButton } from "@material-ui/core";
 import List from "@material-ui/core/List";
@@ -10,7 +10,7 @@ import StatusSnackbar from "./StatusSnackbar";
 import SendFormDialog from "./SendFormDialog";
 
 const AccountManageList = (props) => {
-    const { users, officialAccount } = props;
+    const { users, setUsers, officialAccount } = props;
     const [snackbar, setSnackbar] = useState({
         message: "",
         type: "",
@@ -43,15 +43,33 @@ const AccountManageList = (props) => {
                 });
                 if (res.data.deletedOwn) {
                     window.location.href = "/home";
+                } else {
+                    setOpenCheckDialog(false);
+                    setUsers(
+                        users.filter(function (user) {
+                            return user.id != userId;
+                        })
+                    );
                 }
             })
             .catch((error) => {
-                console.log(error);
                 setSnackbar({
                     message: error.response.data.message,
                     type: "error",
                     open: true,
                 });
+                setOpenCheckDialog(false);
+            });
+    };
+
+    const getUsers = () => {
+        axios
+            .get("/api/official_account/" + officialAccount.id + "/users")
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .catch(() => {
+                console.log("通信に失敗しました");
             });
     };
 

@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public $successStatus = 200;
     public $TRUE = 1;
-    public $FALSE = 1;
+    public $FALSE = 0;
 
     /**
      * Display a listing of the resource.

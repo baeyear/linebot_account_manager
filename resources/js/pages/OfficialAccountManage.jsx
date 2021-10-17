@@ -50,6 +50,7 @@ const OfficialAccountManage = () => {
                 />
                 <AccountManageList
                     users={users}
+                    setUsers={setUsers}
                     officialAccount={officialAccount}
                 />
             </div>
