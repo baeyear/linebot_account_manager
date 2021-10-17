@@ -22,15 +22,18 @@ const useStyles = makeStyles((theme) =>
 const options = [
     {
         title: "管理者",
-        value: "admin",
+        value: "1",
     },
     {
         title: "使用者",
-        value: "worker",
+        value: "2",
     },
 ];
 
 function AddUserForm(props) {
+    const { users, setUsers, officialAccount } = props;
+    const classes = useStyles();
+
     const {
         register,
         formState: { errors },
@@ -43,14 +46,11 @@ function AddUserForm(props) {
             permission: "",
         },
     });
-
     const onSubmit = (data) => {
         addUser(data);
         reset();
     };
 
-    const classes = useStyles();
-    const { users, setUsers } = props;
     const [progress, setProgress] = useState();
     const [snackbar, setSnackbar] = useState({
         message: "",
@@ -67,22 +67,23 @@ function AddUserForm(props) {
     const addUser = async (data) => {
         setProgress(true);
         await axios
-            .post("/api/official_accounts/add", {
+            .post("/api/official_account/user/create", {
                 email: data.email,
+                permission: data.permission,
+                official_account_id: officialAccount.id,
             })
             .then((res) => {
                 var newUsers = [...users, res.data];
                 setUsers(newUsers);
                 setSnackbar({
-                    message: "登録完了しました。",
+                    message: res.data.message,
                     type: "success",
                     open: true,
                 });
             })
             .catch((error) => {
                 setSnackbar({
-                    message:
-                        "登録できませんでした。入力内容を確認してください。",
+                    message: error.response.data.message,
                     type: "error",
                     open: true,
                 });
@@ -112,7 +113,6 @@ function AddUserForm(props) {
                 <FormControl
                     error={errors?.hasOwnProperty("permission")}
                     fullWidth
-                    required
                 >
                     <FormLabel>権限設定</FormLabel>
                     <FormHelperText>
@@ -122,8 +122,8 @@ function AddUserForm(props) {
                         name="permission"
                         control={control}
                         rules={{ required: true }}
-                        render={() => (
-                            <RadioGroup>
+                        render={({ field: { onChange, value } }) => (
+                            <RadioGroup value={value} onChange={onChange}>
                                 {options.map((option, i) => (
                                     <FormControlLabel
                                         value={option.value}

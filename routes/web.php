@@ -30,6 +30,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
     Route::get('official_account/{id}', 'Api\OfficialAccountController@show');
     Route::get('official_account/{id}/users', 'Api\OfficialAccountController@showUsers');
     Route::delete('official_account/user', 'Api\UserController@destroyPermission');
+    Route::post('official_account/user/create', 'Api\UserController@storePermission');
     Route::get('user_list/{id}', 'Api\LineUserController@index');
     Route::get('chat/{line_user_id}', 'Api\ChatController@index');
     Route::post('chat', 'CallbackController@push_message');

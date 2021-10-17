@@ -43,7 +43,11 @@ const OfficialAccountManage = () => {
             <div className="card">
                 <Box>アカウント名: {officialAccount.name}</Box>
                 <Box>Webhook URL: {officialAccount.webhook_url}</Box>
-                <AddUserForm users={users} />
+                <AddUserForm
+                    users={users}
+                    setUsers={setUsers}
+                    officialAccount={officialAccount}
+                />
                 <AccountManageList
                     users={users}
                     officialAccount={officialAccount}

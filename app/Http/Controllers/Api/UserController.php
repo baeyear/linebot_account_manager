@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\OfficialAccount;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -90,6 +91,30 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * add a permission of an officialaccount to user
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function storePermission(Request $request)
+    {
+        try {
+            $user = User::where('email', '=', $request->email)->first();
+            $official_account = OfficialAccount::find($request->official_account_id);
+            $user->official_accounts()->syncWithoutDetaching([$request->official_account_id => ['permission_id' => $request->permission]]);
+
+            $user['message'] = $user->name . 'へ' . $official_account->name . 'の権限を追加しました。';
+            $user['permission_name'] = $user->official_accounts()->find($request->official_account_id)->pivot->official_account_permission->name;
+            return response()->json($user, 200);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json([
+                'message' => '権限を追加できませんでした。入力した情報が正しいか確認してください。'
+            ], 500);
+        }
     }
 
     /**
