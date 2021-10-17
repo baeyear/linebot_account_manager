@@ -11,6 +11,13 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+use App\LineUser;
+
+Broadcast::channel('callbackChannel.{line_user_id}', function ($user, $line_user_id) {
+    $authenticated_users = LineUser::find($line_user_id)->official_accounts()->users();
+    if ($authenticated_users->find($user->id) == null) {
+        return false;
+    } else {
+        return true;
+    }
 });

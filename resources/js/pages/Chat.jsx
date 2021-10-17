@@ -24,6 +24,7 @@ const Chat = () => {
     const [loading, setLoading] = useState(true);
     const [lineUser, setLineUser] = useState("");
     const [officialAccount, setOfficialAccount] = useState("");
+    const [newChat, setNewChat] = useState([]);
     const classes = useStyles();
     const ref = React.useRef();
 
@@ -37,6 +38,22 @@ const Chat = () => {
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        console.log("callbackChannel." + history.location.state.lineUser.id);
+        if (history.location.state) {
+            window.Echo.private(
+                "callbackChannel." + history.location.state.lineUser.id
+            ).listen("CallbackEvent", (e) => {
+                setNewChat(e.chat);
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        var allChats = [...chats, newChat];
+        setChats(allChats);
+    }, [newChat]);
 
     useLayoutEffect(() => {
         if (ref && ref.current) {
@@ -56,6 +73,9 @@ const Chat = () => {
                 console.log("通信に失敗しました");
             });
     };
+
+    if (history.location.state) {
+    }
 
     if (loading) {
         return <Loading />;

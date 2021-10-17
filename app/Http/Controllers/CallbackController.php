@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Events\CallbackEvent;
 use App\OfficialAccount;
 use App\LineUser;
 use App\Chat;
@@ -59,6 +60,8 @@ class CallbackController extends Controller
             $chat->chat = $message;
             $chat->is_sent_by_admin = false;
             $chat->save();
+
+            event(new CallbackEvent($chat, $user->id));
 
             return 'ok';
         }
