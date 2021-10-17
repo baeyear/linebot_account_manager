@@ -58,7 +58,7 @@ class OfficialAccountController extends Controller
 
             // webhook, botnameの登録
             $official_account->name = json_decode($bot_json, true)['displayName'];
-            $official_account->webhook_url = url('/callback/' . $official_account->id);
+            $official_account->webhook_url = url('/api/callback/' . $official_account->id);
             $official_account->save();
 
             // 中間テーブルへの登録
@@ -152,7 +152,7 @@ class OfficialAccountController extends Controller
     public function updateWebhook($official_account)
     {
         try {
-            $webhook = url('callback/' . $official_account->id);
+            $webhook = url('/api/callback/' . $official_account->id);
             $access_token = $official_account->access_token;
 
             $client = new Client();
