@@ -8,6 +8,7 @@ import AccountManageList from "../components/AccountManageList";
 import Header from "../components/Header";
 import AddUserForm from "../components/AddUserForm";
 import ReturnDialog from "../components/ReturnDialog";
+import TestConnectionForm from "../components/TestConnectionForm";
 
 const OfficialAccountManage = () => {
     const [users, setUsers] = useState([]);
@@ -43,6 +44,10 @@ const OfficialAccountManage = () => {
             <div className="card">
                 <Box>アカウント名: {officialAccount.name}</Box>
                 <Box>Webhook URL: {officialAccount.webhook_url}</Box>
+                <TestConnectionForm
+                    officialAccount={officialAccount}
+                    setOfficialAccount={setOfficialAccount}
+                />
                 <AddUserForm
                     users={users}
                     setUsers={setUsers}

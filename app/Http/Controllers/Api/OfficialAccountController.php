@@ -212,4 +212,36 @@ class OfficialAccountController extends Controller
             return abort('アカウント名をLINEから取得できませんでした。', 500);
         }
     }
+
+    /**
+     * fetch bot name, and update webhook of LINE
+     *
+     * @param  \App\OfficialAccount  $official_account
+     *
+     * @return string $response
+     */
+    public function checkAccount(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // DBに同一データがないか確認
+            $official_account = OfficialAccount::find($request->id);
+
+            // LINEにリクエスト
+            $update_status = $this->updateWebhook($official_account);
+            $bot_json = $this->getBotName($official_account);
+
+            // webhook, botnameの登録
+            $official_account->name = json_decode($bot_json, true)['displayName'];
+            $official_account->webhook_url = url('/api/callback/' . $official_account->id);
+            $official_account->save();
+
+            DB::commit();
+            return response()->json(['message' => 'webhookURLとアカウント名を更新しました。', 'officialAccount' => $official_account], 200);
+        } catch (\Throwable $th) {
+            Log::debug($th);
+            DB::rollback();
+            return response()->json(['message' => $th->getMessage()], 500);
+        }
+    }
 }
