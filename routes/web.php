@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\URL;
 |
 */
 
-URL::forceScheme('https');
 Route::view('/', 'welcome');
 
 Auth::routes();
