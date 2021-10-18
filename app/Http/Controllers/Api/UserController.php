@@ -8,6 +8,7 @@ use Validator;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\OfficialAccount;
+use App\UserOfficialAccount;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -103,12 +104,37 @@ class UserController extends Controller
     {
         try {
             $user = User::where('email', '=', $request->email)->first();
+            if ($user->id == Auth::id()) {
+                return response()->json([
+                    'message' => '自分の権限は変更できません。'
+                ], 500);
+            }
             $official_account = OfficialAccount::find($request->official_account_id);
-            $user->official_accounts()->syncWithoutDetaching([$request->official_account_id => ['permission_id' => $request->permission]]);
+            $permission = UserOfficialAccount::where([
+                'user_id' => $user->id,
+                'official_account_id' => $official_account->id
+            ])->first();
+            Log::info($permission);
 
-            $user['message'] = $user->name . 'へ' . $official_account->name . 'の権限を追加しました。';
-            $user['permission_name'] = $user->official_accounts()->find($request->official_account_id)->pivot->official_account_permission->name;
-            return response()->json($user, 200);
+            if ($permission == null) {
+                $user->official_accounts()->syncWithoutDetaching([$request->official_account_id => ['permission_id' => $request->permission]]);
+                $user['permission_name'] = $user->official_accounts()->find($request->official_account_id)->pivot->official_account_permission->name;
+                $user['message'] = $user->name . 'へ' . $user['permission_name'] . 'の権限を追加しました。(' . $official_account->name . ')';
+
+                return response()->json($user, 200);
+            } else {
+                $permission_id = $permission->permission_id;
+                $user->official_accounts()->syncWithoutDetaching([$request->official_account_id => ['permission_id' => $request->permission]]);
+                $user['permission_name'] = $user->official_accounts()->find($request->official_account_id)->pivot->official_account_permission->name;
+
+                if ($permission_id == $request->permission) {
+                    $user['message'] = $user->name . 'はすでに' .  $user['permission_name'] . '権限を保有しています(' . $official_account->name . ')';
+                } else {
+                    $user['message'] = $user->name . 'の権限を「' . $user['permission_name'] . '」に更新しました。(' . $official_account->name . ')';
+                }
+
+                return response()->json($user, 200);
+            }
         } catch (\Throwable $th) {
             Log::error($th);
             return response()->json([

@@ -73,8 +73,7 @@ function AddUserForm(props) {
                 official_account_id: officialAccount.id,
             })
             .then((res) => {
-                var newUsers = [...users, res.data];
-                setUsers(newUsers);
+                getUsers();
                 setSnackbar({
                     message: res.data.message,
                     type: "success",
@@ -87,11 +86,20 @@ function AddUserForm(props) {
                     type: "error",
                     open: true,
                 });
-                console.log(data.permission);
-                console.log(data.email);
             })
             .then(() => {
                 setProgress(false);
+            });
+    };
+
+    const getUsers = () => {
+        axios
+            .get("/api/official_account/" + officialAccount.id + "/users")
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .catch(() => {
+                console.log("通信に失敗しました");
             });
     };
 
