@@ -33,9 +33,10 @@ class CallbackController extends Controller
         if ($message_type == 'message') {
             $reply_token = $inputs['events'][0]['replyToken'];
 
+            /*
             $reply_message = 'メッセージありがとうございます';
-
             $reply = $bot->replyText($reply_token, $reply_message);
+            */
 
             $userId = $request['events'][0]['source']['userId'];
             $message = $request['events'][0]['message']['text'];
