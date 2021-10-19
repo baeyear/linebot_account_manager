@@ -30,11 +30,8 @@ const OfficialAccountManage = () => {
             .get("/api/official_account/" + officialAccount.id + "/users")
             .then((response) => {
                 setUsers(response.data);
-                console.log(response.data);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     return (

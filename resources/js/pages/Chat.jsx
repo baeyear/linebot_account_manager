@@ -40,7 +40,6 @@ const Chat = () => {
     }, []);
 
     useEffect(() => {
-        console.log("callbackChannel." + history.location.state.lineUser.id);
         if (history.location.state) {
             window.Echo.private(
                 "callbackChannel." + history.location.state.lineUser.id
@@ -66,12 +65,9 @@ const Chat = () => {
             .get("/api/chat/" + lineUser.id)
             .then((response) => {
                 setChats(response.data);
-                console.log(response.data);
                 setLoading(false);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     if (history.location.state) {

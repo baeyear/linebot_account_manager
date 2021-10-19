@@ -69,7 +69,6 @@ function CreateAccountForm(props) {
                 });
             })
             .catch((error) => {
-                console.log(error.response);
                 setSnackbar({
                     message: error.response.data.message,
                     type: "error",

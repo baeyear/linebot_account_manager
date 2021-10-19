@@ -70,12 +70,9 @@ const UserList = (props) => {
             .get("/api/user_list/" + officialAccount.id)
             .then((response) => {
                 setUserList(response.data);
-                console.log(response.data);
                 setLoading(false);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     if (loading) {

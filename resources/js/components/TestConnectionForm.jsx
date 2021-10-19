@@ -39,11 +39,9 @@ function TestConnectionForm(props) {
                     type: "success",
                     open: true,
                 });
-                console.log(res.data);
                 setOfficialAccount(res.data.officialAccount);
             })
             .catch((error) => {
-                console.log(error.response);
                 setSnackbar({
                     message: error.response.data.message,
                     type: "error",

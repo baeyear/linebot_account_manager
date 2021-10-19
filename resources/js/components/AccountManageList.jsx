@@ -35,7 +35,6 @@ const AccountManageList = (props) => {
                 },
             })
             .then((res) => {
-                console.log(userId);
                 setSnackbar({
                     message: res.data.message,
                     type: "success",
@@ -68,9 +67,7 @@ const AccountManageList = (props) => {
             .then((response) => {
                 setUsers(response.data);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     return (

@@ -38,13 +38,10 @@ const Dashboard = () => {
             .get("/api/official_accounts")
             .then((response) => {
                 var newOfficialAccounts = [...response.data];
-                console.log(response.data);
                 setOfficialAccounts(newOfficialAccounts);
                 setLoading(false);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     if (loading) {

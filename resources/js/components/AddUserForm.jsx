@@ -98,9 +98,7 @@ function AddUserForm(props) {
             .then((response) => {
                 setUsers(response.data);
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
-            });
+            .catch(() => {});
     };
 
     let form = <Loading></Loading>;
