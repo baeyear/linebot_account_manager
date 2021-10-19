@@ -63,11 +63,7 @@ class OfficialAccountController extends Controller
 
             // 中間テーブルへの登録
             $permission_id = 1;
-            $user_official_account = new UserOfficialAccount();
-            $user_official_account->user_id = Auth::id();
-            $user_official_account->official_account_id = $official_account->id;
-            $user_official_account->permission_id = $permission_id;
-            $user_official_account->save();
+            $official_account->users()->attach(Auth::id(), ['permission_id' => $permission_id]);
 
             $official_account['permission_name'] = $official_account->pivot->official_account_permission->name;
             DB::commit();
