@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\CallbackController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,6 +9,6 @@ use App\Http\Controllers\CallbackController;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
-Route::post('callback/{id}', 'CallbackController@callback');
+Route::post('callback/{officialAccountId}', 'CallbackController');

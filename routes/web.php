@@ -1,9 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\OfficialAccountController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::view('/', 'welcome');
 
@@ -31,7 +28,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
     Route::post('official_account/check', 'Api\OfficialAccountController@checkAccount');
     Route::get('user_list/{id}', 'Api\LineUserController@index');
     Route::get('chat/{line_user_id}', 'Api\ChatController@index');
-    Route::post('chat', 'CallbackController@push_message');
+    Route::post('chat', 'LineController');
 });
 
 Route::get('{any}', 'HomeController@index')->where('any', '.*');
