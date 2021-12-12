@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Repositories\LinebotRepositoryInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
 use \LINE\LINEBot\MessageBuilder\TextMessageBuilder;
@@ -30,7 +32,7 @@ class LinebotService
      * @param LinebotRepository $linebotRepository
      * @param int $officialAccountId
      */
-    public function __invoke($officialAccountId)
+    public function __invoke(int $officialAccountId): LinebotService
     {
         $this->officialAccount = $this->linebotRepository->findOfficialAccount($officialAccountId);
         $httpClient = new CurlHTTPClient($this->officialAccount->access_token);
@@ -43,7 +45,7 @@ class LinebotService
      *
      * @param Request $request
      */
-    private function handle($request)
+    public function handle(Request $request)
     {
         $inputs = $request->all();
 
@@ -66,7 +68,7 @@ class LinebotService
      * @param Request $request
      * @return void
      */
-    public function handleMessage($request)
+    public function handleMessage($request): void
     {
         $userId = $request['events'][0]['source']['userId'];
         $message = $request['events'][0]['message']['text'];
@@ -86,7 +88,7 @@ class LinebotService
      */
     public function handleNoInput()
     {
-        return response()->json([], 200);
+        return response()->json([], Response::HTTP_OK);
     }
 
     /**

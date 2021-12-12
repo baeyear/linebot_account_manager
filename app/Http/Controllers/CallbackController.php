@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\LinebotService;
+use Illuminate\Http\Request;
 
 class CallbackController extends Controller
 {

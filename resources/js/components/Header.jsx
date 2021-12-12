@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     displaynone: {
         display: "none",
     },
+    header: {
+        backgroundColor: "#1F2A43",
+    },
 }));
 
 const Header = (props) => {
@@ -44,7 +47,7 @@ const Header = (props) => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" className={classes.header}>
             <Toolbar>
                 <IconButton
                     className={isHome ? classes.displaynone : ""}

@@ -15,7 +15,7 @@ class LinebotRepository implements LinebotRepositoryInterface
      * @param int $officialAccountId
      * @return OfficialAccount
      */
-    public function findOfficialAccount($officialAccountId): OfficialAccount
+    public function getOfficialAccount($officialAccountId): OfficialAccount
     {
         $officialAccount = OfficialAccount::find($officialAccountId)->first();
         return $officialAccount;
@@ -27,7 +27,7 @@ class LinebotRepository implements LinebotRepositoryInterface
      *
      * @return LineUser
      */
-    public function findUser($officialAccount, $userId): LineUser
+    public function getUser($officialAccount, $userId): LineUser
     {
         $user = $officialAccount->line_users->where('line_id', $userId)->first();
         return $user;
